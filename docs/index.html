@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="color-scheme" content="dark light"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>form-kit — form controls for offline apps</title>
+<style>
+:root{--bg:#0f1115;--card:#171a21;--ink:#e7e9ee;--mut:#9aa3b2;--line:#252a34;--acc:#22c55e;--code:#1d222b}
+:root[data-theme="light"]{color-scheme:light;--bg:#f6f7f9;--card:#fff;--ink:#0f1115;--mut:#4b5563;--line:#dfe3e8;--acc:#15803d;--code:#f1f3f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header,main,footer{max-width:980px;margin:0 auto;padding:24px 20px}
+h1{margin:0 0 6px;font-size:24px}h2{margin:30px 0 8px;font-size:17px}
+.mut{color:var(--mut)}
+.theme-btn{float:right;width:30px;height:30px;margin:2px 0 0 10px;padding:0;background:transparent;color:inherit;
+  border:1px solid var(--line);border-radius:50%;cursor:pointer;opacity:.8}
+.theme-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.cols{display:grid;gap:20px;grid-template-columns:1fr 1fr}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.field{display:flex;flex-direction:column;gap:6px;margin:0 0 14px}
+.field-label{font-size:13px;font-weight:600;color:var(--ink)}
+.field-required{color:#f7768e}
+.field-help{font-size:12px;color:var(--mut);margin:0}
+.field-error{font-size:12px;color:#f7768e;margin:0}
+.control{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+  padding:8px 10px;font:inherit;font-size:14px;width:100%}
+.control[data-invalid]{border-color:#f7768e}
+textarea.control{min-height:70px;resize:vertical}
+.otp{display:flex;gap:8px}
+.otp-cell{width:40px;height:46px;text-align:center;font:600 18px system-ui;background:var(--bg);
+  color:var(--ink);border:1px solid var(--line);border-radius:8px}
+.autocomplete{position:relative}
+.autocomplete-list{position:absolute;z-index:5;left:0;right:0;top:100%;margin:4px 0 0;padding:4px;list-style:none;
+  background:var(--card);border:1px solid var(--line);border-radius:8px;max-height:180px;overflow:auto}
+.autocomplete-item{padding:6px 8px;border-radius:6px;cursor:pointer;font-size:14px}
+.autocomplete-item:hover{background:var(--code)}
+.calendar{border:1px solid var(--line);border-radius:10px;padding:8px}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.calendar-title{font-size:13px;font-weight:600}
+.calendar-nav{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:6px;
+  width:26px;height:26px;cursor:pointer;font-size:14px;line-height:1}
+.calendar-row{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.calendar-dow-cell{text-align:center;font-size:11px;color:var(--mut);padding:2px 0}
+.calendar-cell{background:transparent;color:var(--ink);border:0;border-radius:6px;padding:6px 0;
+  font:inherit;font-size:12px;cursor:pointer}
+.calendar-cell:hover{background:var(--code)}
+.calendar-cell.is-selected{background:var(--acc);color:#06210f;font-weight:700}
+.calendar-cell.is-empty{cursor:default}
+.choice{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.choice-label{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}
+.control-check,.control-radio,.control-switch{accent-color:var(--acc);width:16px;height:16px}
+.switch{display:flex;align-items:center;gap:10px}
+.control-switch{appearance:none;width:40px;height:22px;border-radius:999px;background:var(--line);position:relative;cursor:pointer}
+.control-switch:checked{background:var(--acc)}
+.control-switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;
+  background:#fff;transition:transform .16s}
+.control-switch:checked::after{transform:translateX(18px)}
+.radio-group{display:flex;gap:16px;flex-wrap:wrap}
+.slider{display:flex;align-items:center;gap:10px}
+.control-slider{flex:1;accent-color:var(--acc)}
+.slider-value{font-size:12px;color:var(--mut);min-width:2ch}
+.rate{display:flex;gap:2px}
+.rate-star{background:transparent;border:0;font-size:20px;line-height:1;cursor:pointer;color:var(--line)}
+.rate-star.is-on{color:#fadb14}
+.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
+.toggle{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;
+  padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.toggle.is-on{border-color:var(--acc);color:var(--acc)}
+.color-swatches{display:flex;gap:6px;flex-wrap:wrap}
+.swatch{width:24px;height:24px;border-radius:6px;border:2px solid transparent;cursor:pointer}
+.swatch.is-on{border-color:var(--ink)}
+.color-picker{display:flex;gap:8px;align-items:center}
+.control-color{width:44px;height:34px;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.color-text{flex:1}
+.image-select{display:flex;gap:8px;flex-wrap:wrap}
+.image-option{background:transparent;border:2px solid var(--line);border-radius:10px;padding:4px;cursor:pointer;
+  display:flex;flex-direction:column;gap:4px;align-items:center;color:var(--ink);font-size:11px}
+.image-option.is-on{border-color:var(--acc)}
+.image-option img{width:64px;height:44px;object-fit:cover;border-radius:6px;background:var(--code)}
+.upload-input{display:none}
+.upload-button{background:var(--code);border:1px dashed var(--line);color:var(--ink);border-radius:8px;
+  padding:10px;width:100%;cursor:pointer;font:inherit;font-size:13px}
+.upload-list{list-style:none;margin:6px 0 0;padding:0;font-size:12px;color:var(--mut)}
+.editable{display:inline-block;min-width:80px;padding:4px 6px;border-radius:6px;cursor:text;border:1px dashed transparent}
+.editable:hover{border-color:var(--line)}
+.editable-input{width:100%}
+.hotkey-input{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.form-group{border:1px solid var(--line);border-radius:10px;padding:12px;margin:0 0 14px}
+.form-legend{font-size:13px;font-weight:600;padding:0 6px}
+.form-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.form-footer .control{width:auto;padding:8px 16px;cursor:pointer}
+.form-footer .primary{background:var(--acc);color:#06210f;border-color:var(--acc);font-weight:600}
+pre{background:var(--code);border-radius:10px;padding:12px;overflow:auto;font:12px/1.5 ui-monospace,Menlo,monospace;margin:0}
+</style></head><body>
+<header>
+  <button class="theme-btn" id="theme" title="Switch theme" aria-label="Switch theme">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+  </button>
+  <h1>form-kit</h1>
+  <p class="mut">24 form controls for offline apps. Every control has the same API —
+  <code>value()</code>, <code>set()</code>, <code>on("change")</code> — and binds to a ui-kit signal
+  with <code>Form.bind()</code>.</p>
+</header>
+
+<main>
+  <div class="cols">
+    <div class="panel" id="form"></div>
+    <div class="panel">
+      <h2 style="margin-top:0">Values</h2>
+      <pre id="values">{}</pre>
+      <h2>Validation</h2>
+      <pre id="validation">press Validate</pre>
+    </div>
+  </div>
+</main>
+
+<footer class="mut" style="font-size:13px">
+  <p>PolyForm Noncommercial 1.0.0. (c) 2026 Dr Sohil Momin. Control set follows lobe-mygo pkg/field, choice and form (MIT).</p>
+</footer>
+
+<script src="../form-kit.js"></script>
+<script>
+var F = window.Form;
+var host = document.getElementById("form");
+var controls = {};
+
+function add(c) { host.appendChild(c.wrap || c.el || c); return c; }
+
+controls.name = add(F.input({ label: "Full name", name: "name", placeholder: "Ada Lovelace", required: true }));
+controls.email = add(F.input({ label: "Email", name: "email", type: "text", placeholder: "you@example.com", help: "Never leaves this page." }));
+controls.age = add(F.number({ label: "Age", name: "age", min: 0, max: 120, value: 36 }));
+controls.dose = add(F.select({
+  label: "Potency", name: "potency", placeholder: "Choose",
+  options: ["6C", "12C", "30C", "200C", "1M"]
+}));
+controls.remedy = add(F.autocomplete({
+  label: "Remedy", name: "remedy", placeholder: "Start typing…",
+  options: ["Arnica montana", "Belladonna", "Bryonia alba", "Nux vomica", "Pulsatilla", "Rhus toxicodendron"]
+}));
+controls.visit = add(F.datePicker({ label: "Visit date", name: "visit", value: "2026-11-09" }));
+controls.cal = add(F.calendar({ label: "Follow-up", year: 2026, month: 10, value: "2026-11-16" }));
+controls.code = add(F.otp({ label: "One-time code", length: 6 }));
+controls.notes = add(F.textarea({ label: "Notes", name: "notes", placeholder: "What changed?" }));
+
+var choice = document.createElement("div");
+host.appendChild(choice);
+choice.appendChild(F.checkbox({ label: "Patient consented", value: true }).wrap);
+choice.appendChild(F.switch({ label: "Reminders on", value: true }).wrap);
+choice.appendChild(F.radioGroup({ label: "Severity", options: ["mild", "moderate", "severe"], value: "mild" }).wrap);
+choice.appendChild(F.slider({ label: "Pain", min: 0, max: 10, value: 4 }).wrap);
+choice.appendChild(F.rate({ label: "Confidence", value: 3 }).wrap);
+choice.appendChild(F.toggleGroup({ label: "Modalities", options: ["heat", "cold", "motion"], multiple: true, value: ["heat"] }).wrap);
+choice.appendChild(F.colorSwatches({ label: "Tag colour", value: "#1677ff" }).wrap);
+choice.appendChild(F.colorPicker({ label: "Custom colour", value: "#22c55e" }).wrap);
+choice.appendChild(F.editableText({ label: "Case title", value: "Case 042" }).wrap);
+choice.appendChild(F.hotkey({ label: "Quick save" }).wrap);
+choice.appendChild(F.upload({ label: "Attach a photo", accept: "image/*", multiple: true }).wrap);
+
+var footer = F.submitFooter({ submit: "Validate", cancel: "Reset" });
+host.appendChild(footer.el);
+
+/* collect the loose controls for the values panel */
+["name", "email", "age", "dose", "remedy", "visit", "code", "notes"].forEach(function (k) {
+  if (!controls[k]) return;
+  controls[k].on("change", draw);
+});
+
+function draw() {
+  var out = {};
+  Object.keys(controls).forEach(function (k) { out[k] = controls[k].value(); });
+  document.getElementById("values").textContent = JSON.stringify(out, null, 2);
+}
+Object.keys(controls).forEach(function (k) { controls[k].on("change", draw); });
+draw();
+
+footer.submit.addEventListener("click", function (e) {
+  e.preventDefault();
+  var values = F.values(controls);
+  var result = F.validate(values, {
+    name: { required: true, minLength: 2 },
+    email: { pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/, message: "Not an email address" },
+    age: { min: 0, max: 120, message: "Out of range" },
+    remedy: { required: "Pick a remedy" },
+    code: { validate: function (v) { return v.length === 0 || v.length === 6 ? true : "Six digits"; } }
+  });
+  F.showErrors(controls, result);
+  document.getElementById("validation").textContent = JSON.stringify(result, null, 2);
+  draw();
+});
+
+/* ---------- theme ---------- */
+(function () {
+  var key = "form-kit-theme";
+  function apply(t) { document.documentElement.setAttribute("data-theme", t); }
+  var saved = null; try { saved = localStorage.getItem(key); } catch (e) {}
+  var system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  apply(saved || system);
+  document.getElementById("theme").addEventListener("click", function () {
+    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    apply(next); try { localStorage.setItem(key, next); } catch (e) {}
+  });
+})();
+</script>
+</body></html>

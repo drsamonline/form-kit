@@ -1,0 +1,8 @@
+{
+  "name": "form-kit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "form-kit \u2014 24 form controls for offline apps: inputs, OTP, select, autocomplete, calendar, upload, checkbox, switch, slider, rate, toggles, colour, validation.",
+  "scripts": { "test": "node test-node.js" },
+  "license": "SEE LICENSE IN LICENSE"
+}
